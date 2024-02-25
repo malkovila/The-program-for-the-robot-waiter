@@ -25,6 +25,11 @@ public:
 	string value = "X";
 };
 
+class Menu {
+public:
+	vector<string> menu;
+};
+
 class Restaurant_field {
 public:
 	vector<vector<Cell>> field;
@@ -393,16 +398,21 @@ public:
 			
 		}
 	}
-	void take_order(string table) {
+	void take_order(string table, Menu& menu1) {
 		cout << "Прием заказа..." << endl;
 		Order order;
 		int count;
-		string ord;
+		string ord = "";
 		cout << "Сколько вас человек? " << endl;
 		cin >> count; 
 		order.count_of_people = count;
 		cout << "Что будете заказывать? " << endl;
-		cin >> ord;
+		while (true) {
+			cin >> ord;
+			if (find(menu1.menu.begin(), menu1.menu.end(), ord) == menu1.menu.end())
+				cout << "Такого блюда нет в меню\n Что будете заказывать? \n";
+			else break;
+		}
 		order.order = ord;
 		order.table = table;
 
@@ -454,6 +464,12 @@ int main() {
 	setlocale(LC_ALL, "RU");
 	Restaurant_field rest1("Clod Mone", 20, 20);
 	Robot s("Илья");
+	Menu menu1;
+	menu1.menu.push_back("pizza");
+	menu1.menu.push_back("salat");
+	menu1.menu.push_back("soup");
+	menu1.menu.push_back("tea");
+
 	rest1.create_field();
 	rest1.change_fieldd();
 	rest1.count_steps(15, 5);//считаем шаги для всех клеток 
@@ -467,7 +483,7 @@ int main() {
 			s.get_order(command, rest1); //подъезжаем к столику
 			map<string, Order> orders = s.orderss();
 			if (orders.find(command) == orders.end())
-				s.take_order(command);
+				s.take_order(command, menu1);
 			else s.put_order(command);
 			s.come_back(command, rest1);
 		}
